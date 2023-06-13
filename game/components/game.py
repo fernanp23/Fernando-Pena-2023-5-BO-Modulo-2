@@ -42,6 +42,16 @@ class Game:
             # si el "event" type es igual a pygame.QUIT entonces cambiamos playing a False
             if event.type == pygame.QUIT:
                 self.playing = False
+            #Si el tipo de evento es KEYDOWN (una tecla fue presionada)
+            elif event.type == pygame.KEYDOWN:
+                # Si la tecla presionada es la flecha derecha
+                if event.key == pygame.K_RIGHT:
+                    # Llamada al método move_right() del objeto spaceship
+                    self.spaceship.move_right()
+                # Si la tecla presionada es la flecha izquierda
+                elif event.key == pygame.K_LEFT:
+                    # Llamada al método move_left() del objeto spaceship
+                    self.spaceship.move_left()
 
     def update(self):
         # pass
