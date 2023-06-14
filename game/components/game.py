@@ -1,8 +1,11 @@
 import pygame
 
-from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE
+from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, ENEMY_1
 
 from game.components.spaceship import SpaceShip
+
+#Import enemy
+from game.components.enemy import Enemy
 
 # Game tiene un "Spaceship" - Por lo general esto es iniciliazar un objeto Spaceship en el __init__
 class Game:
@@ -19,6 +22,8 @@ class Game:
 
         # Game tiene un "Spaceship"
         self.spaceship = SpaceShip()
+        # Instancia objeto enemy
+        self.enemy = Enemy(0, 0, 40, 60, ENEMY_1, 10, self.screen)
 
 
 
@@ -52,10 +57,17 @@ class Game:
                 elif event.key == pygame.K_LEFT:
                     # Llamada al método move_left() del objeto spaceship
                     self.spaceship.move_left()
+                #Nuevo, si las teclas de arriba y abajo son presionadas    
+                elif event.key == pygame.K_UP:
+                    self.spaceship.move_up()
+                elif event.key == pygame.K_DOWN:
+                    self.spaceship.move_down()
 
     def update(self):
         # pass
         self.spaceship.update()
+        # Actualiza la posición del enemigo en cada iteración del bucle principal del juego
+        self.enemy.update()
 
     def draw(self):
         self.clock.tick(FPS)
@@ -65,6 +77,9 @@ class Game:
 
         # dibujamos el objeto en pantalla
         self.screen.blit(self.spaceship.image, self.spaceship.image_rect)
+
+        #dibuja el enemigo
+        self.enemy.draw()
 
         pygame.display.update()
         pygame.display.flip()

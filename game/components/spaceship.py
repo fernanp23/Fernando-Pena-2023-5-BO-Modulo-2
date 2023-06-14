@@ -5,6 +5,8 @@ from game.utils.constants import SPACESHIP
 #Nuevo import para mover la nave de forma horizontal
 from game.utils.constants import SCREEN_WIDTH
 
+from game.utils.constants import SCREEN_HEIGHT
+
 # casi Todo en pygame es un objeto
 # Un personaje en mi juego es un objeto (instancia de algo)
 # La nave (spaceship) es un personaje => necesito una clase
@@ -19,8 +21,8 @@ class SpaceShip(Sprite):
         self.image_size = (40, 60)
         self.image = pygame.transform.scale(SPACESHIP, self.image_size)
         self.image_rect = self.image.get_rect()
-        self.image_rect.x = self.image_size[0]
-        self.image_rect.y = self.image_size[1]
+        self.image_rect.x = 500
+        self.image_rect.y = 500
 
     def update(self):
         pass
@@ -31,7 +33,7 @@ class SpaceShip(Sprite):
         #Si la nave sale de la pantalla por la derecha
         if self.image_rect.x > SCREEN_WIDTH:
             #Aparece en el lado izquierdo
-            self.image_rect.x = -self.image_size[0]
+            self.image_rect.x =- self.image_size[0]
 
     def move_left(self):
         #Mueve la nave a la izquierda
@@ -40,3 +42,19 @@ class SpaceShip(Sprite):
         if self.image_rect.right < 0:
             #Aparece en el lado derecho
             self.image_rect.x = SCREEN_WIDTH
+
+    def move_up(self):
+        #Mueve la nave hacia arriba
+        self.image_rect.y -= 50
+        #Si la nave sale por arriba
+        if self.image_rect.top < 0:
+            #Aparece en el lado de abajo
+            self.image_rect.y = SCREEN_HEIGHT - self.image_rect.height
+
+    def move_down(self):
+        #Mueve la nave hacia abajo
+        self.image_rect.y += 50
+        #Si la nave sale por abajo
+        if self.image_rect.bottom > SCREEN_HEIGHT:
+            #Aparece en el lado de arriba
+            self.image_rect.y = 0
