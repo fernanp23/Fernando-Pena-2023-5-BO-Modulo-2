@@ -1,29 +1,28 @@
 import pygame
+from pygame.sprite import Sprite
 import random
-from game.utils.constants import ENEMY_1, SCREEN_WIDTH, SCREEN_HEIGHT
+from game.utils.constants import SCREEN_WIDTH, SCREEN_HEIGHT
 
-class Enemy(pygame.sprite.Sprite): #Clase para crear sprites
+class Enemy(Sprite):
     def __init__(self, x, y, width, height, image, speed, screen):
-        #Llama al constructor de la clase padre
-        super().__init__() 
-        self.image = pygame.transform.scale(image, (width, height))
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-        self.speed = speed
-        self.screen = screen
-        # Establece la dirección del sprite de manera aleatoria al inicio del juego
-        self.direction = random.choice(['left', 'right', 'up', 'down'])
+        super().__init__() # Llama al método __init__ de la clase base Sprite
+        self.image = pygame.transform.scale(image, (width, height)) # Escala la imagen del enemigo
+        self.rect = self.image.get_rect() # Obtiene el rectángulo que encierra la imagen del enemigo
+        self.rect.x = x # Establece la posición x
+        self.rect.y = y # Establece la posición y
+        self.speed = speed # Establece la velocidad del enemigo
+        self.screen = screen # Establece la pantalla donde se dibujará el enemigo
+        self.direction = random.choice(['left', 'right', 'up', 'down']) # Establece la dirección del enemigo de manera aleatoria al inicio del juego
 
     def update(self):
-        if self.direction == 'left':
-            self.rect.x -= self.speed
-        elif self.direction == 'right':
-            self.rect.x += self.speed
-        elif self.direction == 'up':
-            self.rect.y -= self.speed
-        elif self.direction == 'down':
-            self.rect.y += self.speed
+        if self.direction == 'left': # Si la dirección es izquierda
+            self.rect.x -= self.speed # Mueve el rectángulo hacia la izquierda
+        elif self.direction == 'right': # Si la dirección es derecha
+            self.rect.x += self.speed # Mueve el rectángulo hacia la derecha
+        elif self.direction == 'up': # Si la dirección es arriba
+            self.rect.y -= self.speed # Mueve el rectángulo hacia arriba
+        elif self.direction == 'down': # Si la dirección es abajo
+            self.rect.y += self.speed # Mueve el rectángulo hacia abajo
 
         # Si el enemigo sale de la pantalla en cualquier dirección, aparece en una posición aleatoria en otra dirección aleatoria
         if self.rect.right < 0:   # Si el enemigo sale por la izquierda, aparece por la derecha en una posición aleatoria
@@ -44,5 +43,6 @@ class Enemy(pygame.sprite.Sprite): #Clase para crear sprites
             self.direction = random.choice(['left', 'right', 'up', 'down'])
 
     def draw(self):
-        self.screen.blit(self.image, self.rect)   # Dibuja el enemigo
+        self.screen.blit(self.image, self.rect)   # Dibuja el enemigo en la pantalla en la posición del rectángulo
+
 

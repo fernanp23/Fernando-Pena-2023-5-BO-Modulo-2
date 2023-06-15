@@ -1,10 +1,6 @@
 import pygame
-
-from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, ENEMY_1
-
+from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, ENEMY_1, ENEMY_2
 from game.components.spaceship import SpaceShip
-
-#Import enemy
 from game.components.enemy import Enemy
 
 # Game tiene un "Spaceship" - Por lo general esto es iniciliazar un objeto Spaceship en el __init__
@@ -22,8 +18,16 @@ class Game:
 
         # Game tiene un "Spaceship"
         self.spaceship = SpaceShip()
-        # Instancia objeto enemy
-        self.enemy = Enemy(0, 0, 40, 60, ENEMY_1, 10, self.screen)
+        # Modificaciones para crear un grupo de enemigos
+        self.enemies = pygame.sprite.Group()
+        for i in range(5):
+            enemy = Enemy(0, 0, 40, 60, ENEMY_1, 10, self.screen)
+            self.enemies.add(enemy)
+        for i in range(5):
+            enemy = Enemy(0, 0, 40, 60, ENEMY_2, 10, self.screen)
+            self.enemies.add(enemy)
+        self.bullets = pygame.sprite.Group()
+
 
 
 
@@ -57,17 +61,27 @@ class Game:
                 elif event.key == pygame.K_LEFT:
                     # Llamada al método move_left() del objeto spaceship
                     self.spaceship.move_left()
-                #Nuevo, si las teclas de arriba y abajo son presionadas    
+                # Nuevo, si las teclas de arriba y abajo son presionadas    
                 elif event.key == pygame.K_UP:
                     self.spaceship.move_up()
                 elif event.key == pygame.K_DOWN:
                     self.spaceship.move_down()
+                # Si espacio es presionado accedera a las balas
+                elif event.key == pygame.K_SPACE:
+                    self.spaceship.shoot(self.bullets)
+
 
     def update(self):
-        # pass
-        self.spaceship.update()
-        # Actualiza la posición del enemigo en cada iteración del bucle principal del juego
-        self.enemy.update()
+        self.spaceship.update() # Actualiza la posición de la nave en cada iteración del bucle principal del juego
+        self.enemies.update() # Actualiza la posición de los enemigos en cada iteración del bucle principal del juego
+        for bullet in self.bullets:
+            enemy_hit = pygame.sprite.spritecollideany(bullet, self.enemies) # Verifica si hay una colisión entre la bala y cualquier enemigo
+            if enemy_hit: # Si hay una colisión
+                bullet.kill() # Elimina la bala
+                enemy_hit.kill() # Elimina el enemigo golpeado
+        self.bullets.update() # Actualiza la posición de las balas en cada iteración del bucle principal del juego
+
+
 
     def draw(self):
         self.clock.tick(FPS)
@@ -78,8 +92,13 @@ class Game:
         # dibujamos el objeto en pantalla
         self.screen.blit(self.spaceship.image, self.spaceship.image_rect)
 
-        #dibuja el enemigo
-        self.enemy.draw()
+        # dibuja a los enemigos
+        for enemy in self.enemies:
+            enemy.draw()
+        # dibuja las balas
+        for bullet in self.bullets:
+            bullet.draw(self.screen)
+
 
         pygame.display.update()
         pygame.display.flip()

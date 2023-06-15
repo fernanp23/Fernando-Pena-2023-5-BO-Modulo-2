@@ -1,12 +1,7 @@
 import pygame
 from pygame.sprite import Sprite
-
-from game.utils.constants import SPACESHIP
-#Nuevo import para mover la nave de forma horizontal
-from game.utils.constants import SCREEN_WIDTH
-
-from game.utils.constants import SCREEN_HEIGHT
-
+from game.utils.constants import SPACESHIP, SCREEN_WIDTH, SCREEN_HEIGHT
+from game.components.bullet import Bullet
 # casi Todo en pygame es un objeto
 # Un personaje en mi juego es un objeto (instancia de algo)
 # La nave (spaceship) es un personaje => necesito una clase
@@ -23,9 +18,6 @@ class SpaceShip(Sprite):
         self.image_rect = self.image.get_rect()
         self.image_rect.x = 500
         self.image_rect.y = 500
-
-    def update(self):
-        pass
 
     def move_right(self):
         #Mueve la nave a la derecha
@@ -58,3 +50,8 @@ class SpaceShip(Sprite):
         if self.image_rect.bottom > SCREEN_HEIGHT:
             #Aparece en el lado de arriba
             self.image_rect.y = 0
+
+    def shoot(self, bullets):
+        bullet = Bullet(self.image_rect.centerx, self.image_rect.top) # Crea un nuevo objeto bala en la posición especificada
+        bullets.add(bullet) # Agrega el objeto Bullet al grupo de balas
+
