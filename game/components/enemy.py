@@ -1,10 +1,11 @@
 import pygame
 from pygame.sprite import Sprite
 import random
-from game.utils.constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from game.utils.constants import SCREEN_WIDTH, SCREEN_HEIGHT, BULLET_ENEMY
+from game.components.bullet import Bullet
 
 class Enemy(Sprite):
-    def __init__(self, x, y, width, height, image, speed, screen):
+    def __init__(self, x, y, width, height, image, speed, screen, game):
         super().__init__() # Llama al método __init__ de la clase base Sprite
         self.image = pygame.transform.scale(image, (width, height)) # Escala la imagen del enemigo
         self.rect = self.image.get_rect() # Obtiene el rectángulo que encierra la imagen del enemigo
@@ -13,6 +14,8 @@ class Enemy(Sprite):
         self.speed = speed # Establece la velocidad del enemigo
         self.screen = screen # Establece la pantalla donde se dibujará el enemigo
         self.direction = random.choice(['left', 'right', 'up', 'down']) # Establece la dirección del enemigo de manera aleatoria al inicio del juego
+
+        self.game = game
 
     def update(self):
         if self.direction == 'left': # Si la dirección es izquierda
@@ -41,8 +44,18 @@ class Enemy(Sprite):
         # Genera un número aleatorio para determinar si el enemigo cambia de dirección
         if random.randint(0, 100) < 5:   # Si el número aleatorio es menor que 5, cambia la dirección del enemigo de manera aleatoria
             self.direction = random.choice(['left', 'right', 'up', 'down'])
+        
+        if random.randint(0, 500) < 5: # Si el número aleatorio es menor que 5, dispara una bala
+            self.shoot()
 
     def draw(self):
         self.screen.blit(self.image, self.rect)   # Dibuja el enemigo en la pantalla en la posición del rectángulo
+
+    def shoot(self):
+        bullet = Bullet(self.rect.centerx, self.rect.bottom, BULLET_ENEMY, 5) # Crea un objeto de la clase Bullet en la posición del centro inferior del enemigo
+        self.game.enemy_bullets.add(bullet) # Agrega el objeto Bullet al grupo de balas del enemigo
+
+
+
 
 
