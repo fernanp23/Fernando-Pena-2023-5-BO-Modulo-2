@@ -44,16 +44,17 @@ class Enemy(Sprite):
         # Genera un número aleatorio para determinar si el enemigo cambia de dirección
         if random.randint(0, 100) < 5:   # Si el número aleatorio es menor que 5, cambia la dirección del enemigo de manera aleatoria
             self.direction = random.choice(['left', 'right', 'up', 'down'])
-        
-        if random.randint(0, 500) < 5: # Si el número aleatorio es menor que 5, dispara una bala
-            self.shoot()
 
     def draw(self):
         self.screen.blit(self.image, self.rect)   # Dibuja el enemigo en la pantalla en la posición del rectángulo
 
-    def shoot(self):
-        bullet = Bullet(self.rect.centerx, self.rect.bottom, BULLET_ENEMY, 5) # Crea un objeto de la clase Bullet en la posición del centro inferior del enemigo
-        self.game.enemy_bullets.add(bullet) # Agrega el objeto Bullet al grupo de balas del enemigo
+    def shoot(self, enemy_bullets):
+        if random.randint(0, 500) < 5:
+            bullet = Bullet(self.rect.centerx, self.rect.bottom, BULLET_ENEMY, 5)
+            enemy_bullets.add(bullet)
+            return True
+        return False
+
 
 
 

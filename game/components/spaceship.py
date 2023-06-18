@@ -30,15 +30,17 @@ class SpaceShip(Sprite):
         if self.image_rect.right < 0: # Si la nave sale por la izquierda
             self.image_rect.x = SCREEN_WIDTH # Aparece en el lado derecho
 
-    def move_up(self): # Mueve la nave hacia arriba
+    def move_up(self):
         self.image_rect.y -= 50
-        if self.image_rect.top < 0: # Si la nave sale por arriba
-            self.image_rect.y = SCREEN_HEIGHT - self.image_rect.height # Aparece en el lado de abajo
+        if self.image_rect.top < 0:
+            self.image_rect.top = 0
 
-    def move_down(self): # Mueve la nave hacia abajo
+
+    def move_down(self):
         self.image_rect.y += 50
-        if self.image_rect.bottom > SCREEN_HEIGHT: # Si la nave sale por abajo
-            self.image_rect.y = 0 # Aparece en el lado de arriba
+        if self.image_rect.bottom > SCREEN_HEIGHT:
+            self.image_rect.bottom = SCREEN_HEIGHT
+
 
     def update(self):
         self.rect.x = self.image_rect.x
