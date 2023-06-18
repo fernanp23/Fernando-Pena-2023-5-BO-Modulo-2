@@ -5,6 +5,7 @@ from game.components.spaceship import SpaceShip
 from game.components.enemy import Enemy
 from game.components.game_over import GameOver
 from game.components.game_renderer import GameRenderer
+from game.components.start_screen import StartScreen
 
 class Game:
     def __init__(self):
@@ -31,6 +32,7 @@ class Game:
         self.enemy_bullet_count = 0
         self.enemy_spawn_time = 5 * FPS  # Aparece un nuevo enemigo cada 5 segundos
         self.enemy_spawn_cooldown = 0
+        self.start_screen = StartScreen(self.screen)
         # Instancia de GameRenderer para manejar el dibujo en pantalla
         self.renderer = GameRenderer(self, self.screen, self.font, self.spaceship, self.enemies, self.bullets, self.enemy_bullets, self.game_speed)
 
@@ -46,6 +48,9 @@ class Game:
             self.enemies.add(enemy)
 
     def run(self):
+        # Muestra la pantalla de inicio hasta que el usuario haga clic en el botón de inicio
+        while not self.start_screen.handle_events():
+            self.start_screen.draw()
         # Game loop: events - update - draw
         self.playing = True
         while self.playing:

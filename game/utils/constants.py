@@ -27,6 +27,7 @@ BULLET = pygame.image.load(os.path.join(IMG_DIR, "Bullet/bullet_1.png"))
 BULLET_ENEMY = pygame.image.load(os.path.join(IMG_DIR, "Bullet/bullet_2.png"))
 ENEMY_1 = pygame.image.load(os.path.join(IMG_DIR, "Enemy/enemy_1.png"))
 ENEMY_2 = pygame.image.load(os.path.join(IMG_DIR, "Enemy/enemy_2.png"))
+START = pygame.image.load(os.path.join(IMG_DIR, "Other/Start.png"))
 GAME_OVER = pygame.image.load(os.path.join(IMG_DIR, "Other/GameOverNew.png"))
 RESET = pygame.image.load(os.path.join(IMG_DIR, "Other/Reset.png"))
 
