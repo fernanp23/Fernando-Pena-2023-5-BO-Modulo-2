@@ -1,6 +1,6 @@
 import pygame
 import random
-from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, ENEMY_1, ENEMY_2, FONT_STYLE, SHIELD, HEART
+from game.utils.constants import ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, ENEMY_1, ENEMY_2, FONT_STYLE
 from game.components.spaceship import SpaceShip
 from game.components.enemy import Enemy
 from game.components.game_over import GameOver
@@ -31,8 +31,7 @@ class Game:
         self.enemy_bullet_count = 0
         self.enemy_spawn_time = 5 * FPS  # Aparece un nuevo enemigo cada 5 segundos
         self.enemy_spawn_cooldown = 0
-
-        # Crea una instancia de GameRenderer para manejar el dibujo en pantalla
+        # Instancia de GameRenderer para manejar el dibujo en pantalla
         self.renderer = GameRenderer(self, self.screen, self.font, self.spaceship, self.enemies, self.bullets, self.enemy_bullets, self.game_speed)
 
     def create_enemies(self):
@@ -78,7 +77,7 @@ class Game:
                     self.player_bullet_count += 1
                     self.spaceship.shoot(self.bullets)
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                # Si se hizo clic con el mouse dentro del rectángulo del botón de "volver a jugar"
+                # Si se hizo clic con el mouse dentro del rectángulo del botón de "Restart"
                     if self.play_again_rect.collidepoint(event.pos):
                         return True
                 return False

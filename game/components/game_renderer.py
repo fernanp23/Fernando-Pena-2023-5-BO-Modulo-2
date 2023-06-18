@@ -1,5 +1,5 @@
 import pygame
-from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, ENEMY_1, ENEMY_2, FONT_STYLE, SHIELD, HEART
+from game.utils.constants import BG, SCREEN_HEIGHT, SCREEN_WIDTH, FPS, SHIELD, HEART
 
 class GameRenderer:
     def __init__(self, game, screen, font, spaceship, enemies, bullets, enemy_bullets, game_speed):
