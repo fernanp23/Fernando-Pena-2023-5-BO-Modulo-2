@@ -1,6 +1,6 @@
 import pygame
 import random
-from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, ENEMY_1, ENEMY_2, FONT_STYLE
+from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, ENEMY_1, ENEMY_2, FONT_STYLE, SHIELD, HEART
 from game.components.spaceship import SpaceShip
 from game.components.enemy import Enemy
 from game.components.game_over import GameOver
@@ -175,10 +175,14 @@ class Game:
         self.enemy_bullets.draw(self.screen)
 
     def draw_lives_counter(self):
-        lives_text = f'Lives: {self.lives}'
+        lives_text = f'{self.lives}'
         lives_surface = self.font.render(lives_text, True, (255, 255, 255))
         lives_rect = lives_surface.get_rect(topright=(SCREEN_WIDTH - 10, 10))
         self.screen.blit(lives_surface, lives_rect)
+        # Dibuja la imagen del corazón
+        heart_image = HEART
+        heart_image_rect = heart_image.get_rect(topright=(SCREEN_WIDTH - 10 - 50, 10))
+        self.screen.blit(heart_image, heart_image_rect)
 
     def draw_enemies_remaining(self):
         enemies_text = f'Enemies remaining: {len(self.enemies)}'
@@ -208,10 +212,17 @@ class Game:
     
     def draw_shield_message(self):
         if self.spaceship.shield_cooldown <= 0:
-            shield_text = "Press 's' to activate shield"
+            # Dibuja el texto
+            shield_text = "S"
             shield_surface = self.font.render(shield_text, True, (255, 255, 255))
-            shield_rect = shield_surface.get_rect(bottomleft=(10, SCREEN_HEIGHT - 10))
+            shield_rect = shield_surface.get_rect(bottomleft=(10 + 50, SCREEN_HEIGHT - 10))
             self.screen.blit(shield_surface, shield_rect)
+            
+            # Dibuja la imagen del escudo
+            shield_image = SHIELD
+            shield_image_rect = shield_image.get_rect(bottomleft=(10, SCREEN_HEIGHT - 10))
+            self.screen.blit(shield_image, shield_image_rect)
+
 
     def draw_background(self):
         image = pygame.transform.scale(BG, (SCREEN_WIDTH, SCREEN_HEIGHT))
