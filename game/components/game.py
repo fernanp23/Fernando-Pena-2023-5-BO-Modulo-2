@@ -4,6 +4,7 @@ from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, F
 from game.components.spaceship import SpaceShip
 from game.components.enemy import Enemy
 from game.components.game_over import GameOver
+from game.components.game_renderer import GameRenderer
 
 class Game:
     def __init__(self):
@@ -30,6 +31,9 @@ class Game:
         self.enemy_bullet_count = 0
         self.enemy_spawn_time = 5 * FPS  # Aparece un nuevo enemigo cada 5 segundos
         self.enemy_spawn_cooldown = 0
+
+        # Crea una instancia de GameRenderer para manejar el dibujo en pantalla
+        self.renderer = GameRenderer(self, self.screen, self.font, self.spaceship, self.enemies, self.bullets, self.enemy_bullets, self.game_speed)
 
     def create_enemies(self):
         # Crea grupos de enemigos y los añade al grupo de enemigos
@@ -146,54 +150,22 @@ class Game:
     def draw(self):
         self.clock.tick(FPS)
         self.screen.fill((255, 255, 255))
-        self.draw_background()
-        self.draw_spaceship()
-        self.draw_enemies()
-        self.draw_bullets()
-        self.draw_enemy_bullets()
-        self.draw_lives_counter()
-        self.draw_shield_cooldown()
-        self.draw_shield_message()
-        self.draw_enemies_remaining()
+        self.renderer.draw_background()
+        self.renderer.draw_spaceship()
+        self.renderer.draw_enemies()
+        self.renderer.draw_bullets()
+        self.renderer.draw_enemy_bullets()
+        self.renderer.draw_lives_counter()
+        self.renderer.draw_shield_cooldown()
+        self.renderer.draw_shield_message()
+        self.renderer.draw_enemies_remaining()
         pygame.display.update()
         pygame.display.flip()
-
-    def draw_spaceship(self):
-        self.screen.blit(self.spaceship.image, self.spaceship.image_rect)
-        if self.spaceship.shield_active:
-            self.screen.blit(self.spaceship.shield_image, self.spaceship.shield_image_rect)
-
-    def draw_enemies(self):
-        for enemy in self.enemies:
-            enemy.draw()
-
-    def draw_bullets(self):
-        for bullet in self.bullets:
-            bullet.draw(self.screen)
-
-    def draw_enemy_bullets(self):
-        self.enemy_bullets.draw(self.screen)
-
-    def draw_lives_counter(self):
-        lives_text = f'{self.lives}'
-        lives_surface = self.font.render(lives_text, True, (255, 255, 255))
-        lives_rect = lives_surface.get_rect(topright=(SCREEN_WIDTH - 10, 10))
-        self.screen.blit(lives_surface, lives_rect)
-        # Dibuja la imagen del corazón
-        heart_image = HEART
-        heart_image_rect = heart_image.get_rect(topright=(SCREEN_WIDTH - 10 - 50, 10))
-        self.screen.blit(heart_image, heart_image_rect)
-
-    def draw_enemies_remaining(self):
-        enemies_text = f'Enemies remaining: {len(self.enemies)}'
-        enemies_surface = self.font.render(enemies_text, True, (255, 255, 255))
-        enemies_rect = enemies_surface.get_rect(topleft=(10, 10))
-        self.screen.blit(enemies_surface, enemies_rect)
 
     def game_over(self):
         self.playing = False
         self.show_game_over_screen()
-    
+
         # Reinicia el juego después de mostrar la pantalla de "game over"
         self.__init__()
         self.run()
@@ -202,36 +174,4 @@ class Game:
         # Mostramos los contadores de balas del jugador y del enemigo en la pantalla de "game over"
         game_over_screen = GameOver(self.screen, self.player_bullet_count, self.enemy_bullet_count)
         game_over_screen.draw()
-
-    def draw_shield_cooldown(self):
-        if self.spaceship.shield_cooldown > 0:
-            cooldown_text = f'Shield Cooldown: {int(self.spaceship.shield_cooldown / FPS)}'
-            cooldown_surface = self.font.render(cooldown_text, True, (255, 255, 255))
-            cooldown_rect = cooldown_surface.get_rect(topright=(SCREEN_WIDTH - 10, 40))
-            self.screen.blit(cooldown_surface, cooldown_rect)
-    
-    def draw_shield_message(self):
-        if self.spaceship.shield_cooldown <= 0:
-            # Dibuja el texto
-            shield_text = "S"
-            shield_surface = self.font.render(shield_text, True, (255, 255, 255))
-            shield_rect = shield_surface.get_rect(bottomleft=(10 + 50, SCREEN_HEIGHT - 10))
-            self.screen.blit(shield_surface, shield_rect)
-            
-            # Dibuja la imagen del escudo
-            shield_image = SHIELD
-            shield_image_rect = shield_image.get_rect(bottomleft=(10, SCREEN_HEIGHT - 10))
-            self.screen.blit(shield_image, shield_image_rect)
-
-
-    def draw_background(self):
-        image = pygame.transform.scale(BG, (SCREEN_WIDTH, SCREEN_HEIGHT))
-        image_height = image.get_height()
-        self.screen.blit(image, (self.x_pos_bg, self.y_pos_bg))
-        self.screen.blit(image, (self.x_pos_bg, self.y_pos_bg - image_height))
-        if self.y_pos_bg >= SCREEN_HEIGHT:
-            self.screen.blit(image, (self.x_pos_bg, self.y_pos_bg - image_height))
-            self.y_pos_bg = 0
-        self.y_pos_bg += self.game_speed
-
 
