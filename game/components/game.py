@@ -25,8 +25,6 @@ class Game:
         self.collision_count = 0
         self.lives = 5
         self.font = pygame.font.Font(FONT_STYLE, 25)
-        
-        # Agregamos los contadores de balas del jugador y del enemigo
         self.player_bullet_count = 0
         self.enemy_bullet_count = 0
 
@@ -66,6 +64,8 @@ class Game:
                     self.spaceship.move_up()
                 elif event.key == pygame.K_DOWN:
                     self.spaceship.move_down()
+                elif event.key == pygame.K_s:
+                    self.spaceship.activate_shield()
                 elif event.key == pygame.K_SPACE:
                     # Incrementamos el contador de balas del jugador cada vez que dispara una bala
                     self.player_bullet_count += 1
@@ -104,17 +104,18 @@ class Game:
         self.bullets.update()
 
     def check_enemy_bullet_collisions(self):
-        if pygame.sprite.spritecollideany(self.spaceship, self.enemy_bullets):
+        if pygame.sprite.spritecollideany(self.spaceship, self.enemy_bullets) and not self.spaceship.shield_active:
             self.bullet_count += 1
 
     def check_collisions(self):
         collision = pygame.sprite.spritecollideany(self.spaceship, self.enemy_bullets)
         if collision:
-            collision.kill()
-            self.collision_count += 1
-            if self.collision_count >= 5:
-                self.game_over()
-            self.lives -= 1
+            if not self.spaceship.shield_active:
+                collision.kill()
+                self.collision_count += 1
+                if self.collision_count >= 5:
+                    self.game_over()
+                self.lives -= 1
 
     def update_enemy_bullets(self):
         self.enemy_bullets.update()
@@ -122,10 +123,7 @@ class Game:
     def check_game_over(self):
         if not self.enemies:
             self.game_over()
-        if pygame.sprite.spritecollideany(self.spaceship, self.enemy_bullets):
-            if self.lives <= 0:
-                self.game_over()
-        if self.bullet_count > 5:
+        if self.bullet_count > 5 and not self.spaceship.shield_active:
                 self.game_over()
                 self.death_count += 1
 
@@ -138,11 +136,15 @@ class Game:
         self.draw_bullets()
         self.draw_enemy_bullets()
         self.draw_lives_counter()
+        self.draw_shield_cooldown()
+        self.draw_shield_message()
         pygame.display.update()
         pygame.display.flip()
 
     def draw_spaceship(self):
         self.screen.blit(self.spaceship.image, self.spaceship.image_rect)
+        if self.spaceship.shield_active:
+            self.screen.blit(self.spaceship.shield_image, self.spaceship.shield_image_rect)
 
     def draw_enemies(self):
         for enemy in self.enemies:
@@ -173,6 +175,20 @@ class Game:
         # Mostramos los contadores de balas del jugador y del enemigo en la pantalla de "game over"
         game_over_screen = GameOver(self.screen, self.player_bullet_count, self.enemy_bullet_count)
         game_over_screen.draw()
+
+    def draw_shield_cooldown(self):
+        if self.spaceship.shield_cooldown > 0:
+            cooldown_text = f'Shield Cooldown: {int(self.spaceship.shield_cooldown / FPS)}'
+            cooldown_surface = self.font.render(cooldown_text, True, (255, 255, 255))
+            cooldown_rect = cooldown_surface.get_rect(topright=(SCREEN_WIDTH - 10, 40))
+            self.screen.blit(cooldown_surface, cooldown_rect)
+    
+    def draw_shield_message(self):
+        if self.spaceship.shield_cooldown <= 0:
+            shield_text = "Press 's' to activate shield"
+            shield_surface = self.font.render(shield_text, True, (255, 255, 255))
+            shield_rect = shield_surface.get_rect(bottomleft=(10, SCREEN_HEIGHT - 10))
+            self.screen.blit(shield_surface, shield_rect)
 
     def draw_background(self):
         image = pygame.transform.scale(BG, (SCREEN_WIDTH, SCREEN_HEIGHT))

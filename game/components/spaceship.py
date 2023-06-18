@@ -1,15 +1,8 @@
 import pygame
 from pygame.sprite import Sprite
-from game.utils.constants import SPACESHIP, SCREEN_WIDTH, SCREEN_HEIGHT, BULLET
+from game.utils.constants import SPACESHIP, SCREEN_WIDTH, SCREEN_HEIGHT, BULLET, SPACESHIP_SHIELD, FPS
 from game.components.bullet import Bullet
-# casi Todo en pygame es un objeto
-# Un personaje en mi juego es un objeto (instancia de algo)
-# La nave (spaceship) es un personaje => necesito una clase
 
-
-# SpaceShip es una clase derivada (hija) de Sprite
-
-# spaceship tiene una "imagen"
 class SpaceShip(Sprite):
     
     def __init__(self):
@@ -19,6 +12,11 @@ class SpaceShip(Sprite):
         self.image_rect.x = 500
         self.image_rect.y = 500
         self.rect = self.image_rect
+        self.shield_active = False
+        self.shield_cooldown = 0
+        self.shield_duration = 10 *FPS
+        self.shield_image = pygame.transform.scale(SPACESHIP_SHIELD, (40, 60))
+        self.shield_image_rect = self.shield_image.get_rect()
 
     def move_right(self): # Mueve la nave a la derecha
         self.image_rect.x += 50
@@ -45,8 +43,20 @@ class SpaceShip(Sprite):
     def update(self):
         self.rect.x = self.image_rect.x
         self.rect.y = self.image_rect.y
+        if self.shield_cooldown > 0:
+            self.shield_cooldown -= 1
+        if self.shield_cooldown == 0 and self.shield_active:
+            self.shield_active = False
+            self.shield_cooldown = self.shield_duration
+        self.shield_image_rect.x = self.image_rect.x
+        self.shield_image_rect.y = self.image_rect.y
         
     def shoot(self, bullets):
         bullet = Bullet(self.image_rect.centerx, self.image_rect.top, BULLET, -10) # Crea un objeto de la clase Bullet en la posición del centro inferior del spaceship
         bullets.add(bullet) # Agrega el objeto Bullet al grupo de balas
+
+    def activate_shield(self):
+        if self.shield_cooldown <= 0:
+            self.shield_active = True
+            self.shield_cooldown = self.shield_duration
 
