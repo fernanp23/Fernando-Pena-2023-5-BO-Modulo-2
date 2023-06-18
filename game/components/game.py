@@ -1,4 +1,5 @@
 import pygame
+import random
 from game.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, ENEMY_1, ENEMY_2, FONT_STYLE
 from game.components.spaceship import SpaceShip
 from game.components.enemy import Enemy
@@ -27,6 +28,8 @@ class Game:
         self.font = pygame.font.Font(FONT_STYLE, 25)
         self.player_bullet_count = 0
         self.enemy_bullet_count = 0
+        self.enemy_spawn_time = 5 * FPS  # Aparece un nuevo enemigo cada 5 segundos
+        self.enemy_spawn_cooldown = 0
 
     def create_enemies(self):
         # Crea grupos de enemigos y los añade al grupo de enemigos
@@ -84,6 +87,7 @@ class Game:
         self.check_collisions()
         self.update_enemy_bullets()
         self.check_game_over()
+        self.spawn_enemies()
 
     def update_spaceship(self):
         self.spaceship.update()
@@ -127,6 +131,18 @@ class Game:
                 self.game_over()
                 self.death_count += 1
 
+    def spawn_enemies(self):
+        if self.enemy_spawn_cooldown <= 0:
+            # Crea un nuevo enemigo de un tipo aleatorio y lo agrega al grupo de enemigos
+            enemy_type = random.choice([ENEMY_1, ENEMY_2])
+            enemy = Enemy(0, 0, 40, 60, enemy_type, 5, self.screen, self)
+            self.enemies.add(enemy)
+            # Reinicia el tiempo de enfriamiento para la próxima aparición de un enemigo
+            self.enemy_spawn_cooldown = self.enemy_spawn_time
+        else:
+            # Reduce el tiempo de enfriamiento hasta la próxima aparición de un enemigo
+            self.enemy_spawn_cooldown -= 1
+
     def draw(self):
         self.clock.tick(FPS)
         self.screen.fill((255, 255, 255))
@@ -138,6 +154,7 @@ class Game:
         self.draw_lives_counter()
         self.draw_shield_cooldown()
         self.draw_shield_message()
+        self.draw_enemies_remaining()
         pygame.display.update()
         pygame.display.flip()
 
@@ -162,6 +179,12 @@ class Game:
         lives_surface = self.font.render(lives_text, True, (255, 255, 255))
         lives_rect = lives_surface.get_rect(topright=(SCREEN_WIDTH - 10, 10))
         self.screen.blit(lives_surface, lives_rect)
+
+    def draw_enemies_remaining(self):
+        enemies_text = f'Enemies remaining: {len(self.enemies)}'
+        enemies_surface = self.font.render(enemies_text, True, (255, 255, 255))
+        enemies_rect = enemies_surface.get_rect(topleft=(10, 10))
+        self.screen.blit(enemies_surface, enemies_rect)
 
     def game_over(self):
         self.playing = False
