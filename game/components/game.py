@@ -1,11 +1,12 @@
 import pygame
 import random
-from game.utils.constants import ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, ENEMY_1, ENEMY_2, FONT_STYLE
+from game.utils.constants import ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, ENEMY_1, ENEMY_2, FONT_STYLE, GAME_SOUND
 from game.components.spaceship import SpaceShip
 from game.components.enemy import Enemy
 from game.components.game_over import GameOver
 from game.components.game_renderer import GameRenderer
 from game.components.start_screen import StartScreen
+from game.components.victory_screen import VictoryScreen
 
 class Game:
     def __init__(self):
@@ -35,6 +36,7 @@ class Game:
         self.start_screen = StartScreen(self.screen)
         # Instancia de GameRenderer para manejar el dibujo en pantalla
         self.renderer = GameRenderer(self, self.screen, self.font, self.spaceship, self.enemies, self.bullets, self.enemy_bullets, self.game_speed)
+        self.game_sound = pygame.mixer.Sound(GAME_SOUND)
 
     def create_enemies(self):
         # Crea grupos de enemigos y los añade al grupo de enemigos
@@ -51,7 +53,9 @@ class Game:
         # Muestra la pantalla de inicio hasta que el usuario haga clic en el botón de inicio
         while not self.start_screen.handle_events():
             self.start_screen.draw()
-        # Game loop: events - update - draw
+        self.game_sound.play(loops=-1)
+
+        # Inicia el bucle principal del juego
         self.playing = True
         while self.playing:
             self.handle_events()
@@ -134,7 +138,10 @@ class Game:
 
     def check_game_over(self):
         if not self.enemies:
-            self.game_over()
+            self.game_sound.stop()
+            self.show_victory_screen()
+            self.__init__()
+            self.run()
         if self.bullet_count > 5 and not self.spaceship.shield_active:
                 self.game_over()
                 self.death_count += 1
@@ -168,9 +175,8 @@ class Game:
 
     def game_over(self):
         self.playing = False
+        self.game_sound.stop()
         self.show_game_over_screen()
-
-        # Reinicia el juego después de mostrar la pantalla de "game over"
         self.__init__()
         self.run()
 
@@ -179,3 +185,9 @@ class Game:
         game_over_screen = GameOver(self.screen, self.player_bullet_count, self.enemy_bullet_count)
         game_over_screen.draw()
 
+    def show_victory_screen(self):
+        self.victory_screen = VictoryScreen(self.screen, self.player_bullet_count, self.enemy_bullet_count)
+        self.victory_screen.victory_sound.play(loops=0)
+        # Muestra la pantalla de victoria hasta que el usuario haga clic en la pantalla
+        while not self.victory_screen.handle_events():
+            self.victory_screen.draw()

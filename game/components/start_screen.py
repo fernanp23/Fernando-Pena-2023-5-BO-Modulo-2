@@ -1,5 +1,8 @@
 import pygame
-from game.utils.constants import START, SCREEN_WIDTH, SCREEN_HEIGHT, FONT_STYLE
+from game.utils.constants import START, SCREEN_WIDTH, SCREEN_HEIGHT, FONT_STYLE, START_SOUND
+
+pygame.mixer.init()
+pygame.init()
 
 class StartScreen:
     def __init__(self, screen):
@@ -9,6 +12,8 @@ class StartScreen:
         button_width = 100
         button_height = 50
         self.start_button = pygame.Rect(SCREEN_WIDTH / 2 - button_width / 2, SCREEN_HEIGHT - button_height, button_width, button_height)
+        self.start_sound = pygame.mixer.Sound(START_SOUND)
+        self.start_sound.play(loops=-1)
 
 
     def draw(self):
@@ -23,5 +28,6 @@ class StartScreen:
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.start_button.collidepoint(event.pos):
+                    self.start_sound.stop()
                     return True
         return False

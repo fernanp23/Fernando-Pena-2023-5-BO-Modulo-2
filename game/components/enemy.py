@@ -54,9 +54,3 @@ class Enemy(Sprite):
             enemy_bullets.add(bullet)
             return True
         return False
-
-
-
-
-
-

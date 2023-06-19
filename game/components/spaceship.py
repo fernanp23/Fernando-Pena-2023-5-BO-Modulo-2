@@ -1,6 +1,6 @@
 import pygame
 from pygame.sprite import Sprite
-from game.utils.constants import SPACESHIP, SCREEN_WIDTH, SCREEN_HEIGHT, BULLET, SPACESHIP_SHIELD, FPS
+from game.utils.constants import SPACESHIP, SCREEN_WIDTH, SCREEN_HEIGHT, BULLET, SPACESHIP_SHIELD, FPS, SHOOT_SOUND
 from game.components.bullet import Bullet
 
 class SpaceShip(Sprite):
@@ -17,6 +17,7 @@ class SpaceShip(Sprite):
         self.shield_duration = 10 *FPS
         self.shield_image = pygame.transform.scale(SPACESHIP_SHIELD, (40, 60))
         self.shield_image_rect = self.shield_image.get_rect()
+        self.shoot_sound = pygame.mixer.Sound(SHOOT_SOUND)
 
     def move_right(self): # Mueve la nave a la derecha
         self.image_rect.x += 50
@@ -54,6 +55,7 @@ class SpaceShip(Sprite):
     def shoot(self, bullets):
         bullet = Bullet(self.image_rect.centerx, self.image_rect.top, BULLET, -10) # Crea un objeto de la clase Bullet en la posición del centro inferior del spaceship
         bullets.add(bullet) # Agrega el objeto Bullet al grupo de balas
+        self.shoot_sound.play()
 
     def activate_shield(self):
         if self.shield_cooldown <= 0:
