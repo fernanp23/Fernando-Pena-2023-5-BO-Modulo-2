@@ -4,7 +4,6 @@ from game.utils.constants import SPACESHIP, SCREEN_WIDTH, SCREEN_HEIGHT, BULLET,
 from game.components.bullet import Bullet
 
 class SpaceShip(Sprite):
-    
     def __init__(self):
         self.image_size = (40, 60)
         self.image = pygame.transform.scale(SPACESHIP, self.image_size)
@@ -19,27 +18,25 @@ class SpaceShip(Sprite):
         self.shield_image_rect = self.shield_image.get_rect()
         self.shoot_sound = pygame.mixer.Sound(SHOOT_SOUND)
 
-    def move_right(self): # Mueve la nave a la derecha
+    def move_right(self):
         self.image_rect.x += 50
-        if self.image_rect.x > SCREEN_WIDTH: # Si la nave sale de la pantalla por la derecha
-            self.image_rect.x =- self.image_size[0] # Aparece en el lado izquierdo
+        if self.image_rect.x > SCREEN_WIDTH:
+            self.image_rect.x =- self.image_size[0]
 
-    def move_left(self): # Mueve la nave a la izquierda
+    def move_left(self):
         self.image_rect.x -= 50
-        if self.image_rect.right < 0: # Si la nave sale por la izquierda
-            self.image_rect.x = SCREEN_WIDTH # Aparece en el lado derecho
+        if self.image_rect.right < 0:
+            self.image_rect.x = SCREEN_WIDTH
 
     def move_up(self):
         self.image_rect.y -= 50
         if self.image_rect.top < 0:
             self.image_rect.top = 0
 
-
     def move_down(self):
         self.image_rect.y += 50
         if self.image_rect.bottom > SCREEN_HEIGHT:
             self.image_rect.bottom = SCREEN_HEIGHT
-
 
     def update(self):
         self.rect.x = self.image_rect.x
@@ -53,8 +50,8 @@ class SpaceShip(Sprite):
         self.shield_image_rect.y = self.image_rect.y
         
     def shoot(self, bullets):
-        bullet = Bullet(self.image_rect.centerx, self.image_rect.top, BULLET, -10) # Crea un objeto de la clase Bullet en la posición del centro inferior del spaceship
-        bullets.add(bullet) # Agrega el objeto Bullet al grupo de balas
+        bullet = Bullet(self.image_rect.centerx, self.image_rect.top, BULLET, -10)
+        bullets.add(bullet)
         self.shoot_sound.play()
 
     def activate_shield(self):

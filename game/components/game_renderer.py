@@ -57,7 +57,7 @@ class GameRenderer:
 
     def draw_shield_cooldown(self):
         if self.spaceship.shield_cooldown > 0:
-            cooldown_text = f'Shield Cooldown: {int(self.spaceship.shield_cooldown / FPS)}'
+            cooldown_text = f'Cooldown: {int(self.spaceship.shield_cooldown / FPS)}'
             cooldown_surface = self.font.render(cooldown_text, True, (255, 255, 255))
             cooldown_rect = cooldown_surface.get_rect(topright=(SCREEN_WIDTH - 10, 40))
             self.screen.blit(cooldown_surface, cooldown_rect)
@@ -69,8 +69,6 @@ class GameRenderer:
             shield_surface = self.font.render(shield_text, True, (255, 255, 255))
             shield_rect = shield_surface.get_rect(bottomleft=(10 + 50, SCREEN_HEIGHT - 10))
             self.screen.blit(shield_surface, shield_rect)
-            
-            # Dibuja la imagen del escudo
             shield_image = SHIELD
             shield_image_rect = shield_image.get_rect(bottomleft=(10, SCREEN_HEIGHT - 10))
             self.screen.blit(shield_image, shield_image_rect)

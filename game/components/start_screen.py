@@ -8,7 +8,7 @@ class StartScreen:
     def __init__(self, screen):
         self.screen = screen
         self.bg_image = pygame.transform.scale(START, (SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.font = pygame.font.Font(FONT_STYLE, 32)
+        self.font = pygame.font.Font(FONT_STYLE, 25)
         button_width = 100
         button_height = 50
         self.start_button = pygame.Rect(SCREEN_WIDTH / 2 - button_width / 2, SCREEN_HEIGHT - button_height, button_width, button_height)
